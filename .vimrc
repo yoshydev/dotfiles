@@ -83,4 +83,5 @@ if has("autocmd")
   autocmd FileType scss        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType sass        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType javascript  setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType yaml        setlocal sw=2 sts=2 ts=2 et
 endif

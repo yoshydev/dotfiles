@@ -1,4 +1,7 @@
 export FPATH="${HOME}/dotfiles/zshrc:${FPATH}"
+export PGDATA="/usr/local/var/postgresql@9.6"
+
+eval "$(rbenv init - zsh)"
 
 path=(
   $HOME/.pyenv/shims(N-/)

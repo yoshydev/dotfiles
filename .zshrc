@@ -1,9 +1,20 @@
-export PATH=$HOME/.pyenv/shims:$HOME/google-cloud-sdk/bin:$HOME/.nodebrew/current/bin:$HOME/.composer/vendor/bin:/usr/local/bin:$PATH
 export FPATH="${HOME}/dotfiles/zshrc:${FPATH}"
 
+path=(
+  $HOME/.pyenv/shims(N-/)
+  $HOME/google-cloud-sdk/bin(N-/)
+  $HOME/.nodebrew/current/bin(N-/)
+  $HOME/.composer/vendor/bin(N-/)
+  $HOME/.rbenv/bin(N-/)
+  $HOME/.local/bin(N-/)
+  /usr/local/opt/openssl/bin(N-/)
+  /usr/local/bin
+  $path
+)
+
 autoload -Uz zshrc-base && zshrc-base
-#autoload -Uz zshrc-zplug && zshrc-zplug
-autoload -Uz zshrc-zplugin && zshrc-zplugin
+autoload -Uz zshrc-zinit && zshrc-zinit
+autoload -Uz zshrc-gc-sdk && zshrc-gc-sdk
 
 alias ls='ls -G'
 alias vi='vim'

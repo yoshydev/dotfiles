@@ -1,9 +1,9 @@
 autoload -Uz compinit && compinit
 autoload -U promptinit; promptinit
 
-# HISTFILE=~/.zsh-history
-HISTSIZE=1000000
-SAVEHIST=1000000
+HISTFILE=~/.zsh-history
+HISTSIZE=100000
+SAVEHIST=100000
 
 setopt auto_cd              # コマンドじゃなければ cd する
 setopt auto_param_keys      # カッコの対応などを自動的に補完

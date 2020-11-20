@@ -31,3 +31,8 @@ zinit for \
                 zdharma/history-search-multi-word \
     light-mode pick"async.zsh" src"pure.zsh" \
                 sindresorhus/pure
+
+# gvm Auto-complete
+zinit for \
+    light-mode yerinle/zsh-gvm
+

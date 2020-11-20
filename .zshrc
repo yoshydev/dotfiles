@@ -13,6 +13,8 @@ path=(
   $path
 )
 
+[[ -s "${HOME}/.gvm/scripts/gvm" ]] && source "${HOME}/.gvm/scripts/gvm"
+
 autoload -Uz zshrc-base && zshrc-base
 autoload -Uz zshrc-zinit && zshrc-zinit
 autoload -Uz zshrc-gc-sdk && zshrc-gc-sdk
@@ -20,3 +22,4 @@ autoload -Uz zshrc-rbenv && zshrc-rbenv
 
 alias ls='ls -G'
 alias vi='vim'
+

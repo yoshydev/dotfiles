@@ -18,6 +18,7 @@ if dein#load_state('~/.cache/dein')
   call dein#add('Shougo/neosnippet.vim')
   call dein#add('Shougo/neosnippet-snippets')
   call dein#add('easymotion/vim-easymotion')
+  call dein#add('tpope/vim-surround')
   call dein#add('w0rp/ale')
   call dein#add('kannokanno/previm')
 

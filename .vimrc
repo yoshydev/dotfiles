@@ -17,6 +17,7 @@ if dein#load_state('~/.cache/dein')
   " Add or remove your plugins here:
   call dein#add('Shougo/neosnippet.vim')
   call dein#add('Shougo/neosnippet-snippets')
+  call dein#add('easymotion/vim-easymotion')
   call dein#add('w0rp/ale')
   call dein#add('kannokanno/previm')
 
@@ -51,6 +52,16 @@ if dein#tap('ale')
 endif
 
 "End w0rp/ale---------------------------------
+
+"easymotion/vim-easymotion--------------------
+
+if dein#tap('vim-easymotion')
+  " s{char} to move to {char}{char}
+  nmap s <Plug>(easymotion-s2)
+
+endif
+
+"End easymotion/vim-easymotion----------------
 
 "kannokanno/previm----------------------------
 

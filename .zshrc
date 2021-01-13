@@ -29,6 +29,15 @@ autoload bashcompinit && bashcompinit
 complete -C '/usr/local/bin/aws_completer' aws
 
 alias ls='ls -G'
+alias ll='ls -altr'
 alias vi='vim'
 alias sed='gsed'
+## Docker
+alias drma='docker ps -aq | xargs docker rm'
+alias drmia='docker images -aq | xargs docker rmi'
+## docker-compose
+alias dcu='docker-compose up -d'
+alias dcd='docker-compose down'
+alias dcp='docker-compose ps'
+alias dci='docker-compose images'
 

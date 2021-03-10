@@ -42,3 +42,18 @@ repo = 'iamcco/markdown-preview.nvim'
 on_ft = ['markdown', 'pandoc.markdown', 'rmd']
 build = 'cd app && yarn install'
 
+[[plugins]]
+# Syntax highlight toml
+repo = 'cespare/vim-toml'
+
+[[plugins]]
+# Color scheme
+repo = 'arcticicestudio/nord-vim'
+
+[[plugins]]
+# Color scheme
+repo = 'altercation/vim-colors-solarized'
+hook_add = '''
+  let g:solarized_termcolors=256
+'''
+

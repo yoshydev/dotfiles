@@ -30,6 +30,11 @@ endif
 filetype plugin indent on
 syntax enable
 
+" Color scheme
+" colorscheme nord
+colorscheme solarized
+
+
 "End dein Scripts-------------------------
 
 "conf
@@ -58,4 +63,5 @@ if has("autocmd")
   autocmd FileType sass        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType javascript  setlocal sw=2 sts=2 ts=2 et
   autocmd FileType yaml        setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType toml        setlocal sw=2 sts=2 ts=2 et
 endif

@@ -3,72 +3,34 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
-" Required:
-set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
-
-" Required:
-if dein#load_state('~/.cache/dein')
-  call dein#begin('~/.cache/dein')
-
-  " Let dein manage dein
-  " Required:
-  call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
-
-  " Add or remove your plugins here:
-  call dein#add('Shougo/neosnippet.vim')
-  call dein#add('Shougo/neosnippet-snippets')
-  call dein#add('easymotion/vim-easymotion')
-  call dein#add('tpope/vim-surround')
-  call dein#add('w0rp/ale')
-  call dein#add('kannokanno/previm')
-
-  " You can specify revision/branch/tag.
-  call dein#add('Shougo/deol.nvim', { 'rev': '01203d4c9' })
-
-  " Required:
+" dein settings {{{
+" Auto install dein.vim
+let s:cache_home = empty($XDG_CACHE_HOME) ? expand('~/.cache') : $XDG_CACHE_HOME
+let s:dein_dir = s:cache_home . '/dein'
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+if !isdirectory(s:dein_repo_dir)
+  call system('git clone https://github.com/Shougo/dein.vim ' . shellescape(s:dein_repo_dir))
+endif
+let &runtimepath = s:dein_repo_dir .",". &runtimepath
+" load cache and create cache
+let s:toml_file = fnamemodify(expand('<sfile>'), ':h').'/dotfiles/vimrc/dein.toml'
+if dein#load_state(s:dein_dir)
+  call dein#begin(s:dein_dir)
+  call dein#load_toml(s:toml_file)
   call dein#end()
   call dein#save_state()
 endif
+" plugin auto installing
+if has('vim_starting') && dein#check_install()
+  call dein#install()
+endif
+" }}}
 
 " Required:
 filetype plugin indent on
 syntax enable
 
-" If you want to install not installed plugins on startup.
-if dein#check_install()
-  call dein#install()
-endif
-
 "End dein Scripts-------------------------
-
-"w0rp/ale---------------------------------
-
-if dein#tap('ale')
-  let g:ale_lint_on_enter = 0
-
-  " Ctrl + kで次の指摘へ、Ctrl + jで前の指摘へ移動
-  nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-  nmap <silent> <C-j> <Plug>(ale_next_wrap)
-
-endif
-
-"End w0rp/ale---------------------------------
-
-"easymotion/vim-easymotion--------------------
-
-if dein#tap('vim-easymotion')
-  " s{char} to move to {char}{char}
-  nmap s <Plug>(easymotion-s2)
-
-endif
-
-"End easymotion/vim-easymotion----------------
-
-"kannokanno/previm----------------------------
-
-let g:previm_open_cmd = 'open /Applications/Google\ Chrome.app'
-
-"End kannokanno/previm------------------------
 
 "conf
 set clipboard+=unnamed

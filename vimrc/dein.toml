@@ -49,6 +49,9 @@ repo = 'cespare/vim-toml'
 [[plugins]]
 # Color scheme
 repo = 'arcticicestudio/nord-vim'
+hook_add = '''
+  let g:solarized_termcolors=256
+'''
 
 [[plugins]]
 # Color scheme

@@ -11,7 +11,7 @@ path=(
   $HOME/.local/bin(N-/)
   /usr/local/opt/mysql-client/bin(N-/)
   /usr/local/opt/openssl/bin(N-/)
-  /usr/local/bin
+  /usr/local/bin(N-/)
   $path
 )
 

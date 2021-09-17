@@ -40,4 +40,6 @@ alias dcu='docker-compose up -d'
 alias dcd='docker-compose down'
 alias dcp='docker-compose ps'
 alias dci='docker-compose images'
+## Laravel sail
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 

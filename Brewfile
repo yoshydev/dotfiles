@@ -1,0 +1,7 @@
+tap "homebrew/bundle"
+tap "homebrew/core"
+brew "gcc"
+brew "deno"
+brew "git"
+brew "hello"
+brew "vim"

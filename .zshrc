@@ -18,7 +18,9 @@ path=(
 ## gvm
 [[ -s "${HOME}/.gvm/scripts/gvm" ]] && source "${HOME}/.gvm/scripts/gvm"
 ## jenv
-eval "$(jenv init -)"
+if type "jenv" > /dev/null 2>&1; then
+  eval "$(jenv init -)"
+fi
 
 autoload -Uz zshrc-base && zshrc-base
 autoload -Uz zshrc-zinit && zshrc-zinit

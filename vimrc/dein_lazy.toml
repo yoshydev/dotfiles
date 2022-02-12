@@ -1,0 +1,65 @@
+[[plugins]]
+# Complement
+repo = 'Shougo/ddc.vim'
+on_event = 'InsertEnter'
+depends = ['denops.vim']
+hook_source = '''
+call ddc#custom#patch_global('sources', ['around', 'vim-lsp'])
+call ddc#custom#patch_global('sourceOptions', {
+  \ '_': {
+  \   'matchers': ['matcher_head'],
+  \   'sorters': ['sorter_rank'],
+  \   'converters': ['converter_remove_overlap'],
+  \ },
+  \ 'around': {'mark': 'A'},
+  \ 'vim-lsp': {
+  \   'mark': 'LSP',
+  \   'forceCompletionPattern': '\.|:|->|"\w+/*',
+  \ }})
+
+call ddc#custom#patch_global('sourceParams', {
+  \   'around': {'maxSize': 500},
+  \ })
+
+inoremap <silent><expr> <TAB>
+  \ ddc#map#pum_visible() ? '<C-n>' :
+  \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+  \ '<TAB>' : ddc#map#manual_complete()
+inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
+'''
+
+[[plugins]]
+# Develop environment for vim plugin
+repo = 'vim-denops/denops.vim'
+
+[[plugins]]
+repo = 'Shougo/pum.vim'
+on_source = 'ddc.vim'
+
+[[plugins]]
+# source
+repo = 'Shougo/ddc-around'
+on_source = 'ddc.vim'
+
+[[plugins]]
+# filter
+repo = 'Shougo/ddc-matcher_head'
+on_source = 'ddc.vim'
+
+[[plugins]]
+# filter
+repo = 'Shougo/ddc-sorter_rank'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'Shougo/ddc-converter_remove_overlap'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+on_source = 'ddc.vim'
+

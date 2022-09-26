@@ -34,12 +34,13 @@ syntax enable
 
 " Color scheme
 " colorscheme nord
-colorscheme solarized
+"colorscheme solarized
 
 
 "End dein Scripts-------------------------
 
 "conf
+set encoding=utf-8
 set clipboard+=unnamed
 set backspace=indent,eol,start
 set list
@@ -51,7 +52,7 @@ set tabstop=2
 
 
 if has("autocmd")
-  "sw=softtabstop, sts=shiftwidth, ts=tabstop, et=expandtabの略
+  "sw=softtabstop, sts=shiftwidth, ts=tabstop, et=expandtab
   autocmd FileType ruby        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType js          setlocal sw=2 sts=2 ts=2 et
   autocmd FileType zsh         setlocal sw=2 sts=2 ts=2 et
@@ -66,4 +67,5 @@ if has("autocmd")
   autocmd FileType javascript  setlocal sw=2 sts=2 ts=2 et
   autocmd FileType yaml        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType toml        setlocal sw=2 sts=2 ts=2 et
+  autocmd Filetype gitconfig   setlocal sw=4 sts=4 ts=4 noexpandtab
 endif

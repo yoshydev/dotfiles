@@ -26,6 +26,8 @@ autoload -Uz zshrc-base && zshrc-base
 autoload -Uz zshrc-zinit && zshrc-zinit
 autoload -Uz zshrc-gc-sdk && zshrc-gc-sdk
 autoload -Uz zshrc-rbenv && zshrc-rbenv
+## Darwin or Linux
+autoload -Uz zshrc_`uname` && zshrc_`uname`
 ## aws command completer
 autoload bashcompinit && bashcompinit
 complete -C '/usr/local/bin/aws_completer' aws
@@ -33,7 +35,7 @@ complete -C '/usr/local/bin/aws_completer' aws
 alias ls='ls -G'
 alias ll='ls -altr'
 alias vi='vim'
-alias sed='gsed'
+
 ## Docker
 alias drma='docker ps -aq | xargs docker rm'
 alias drmia='docker images -aq | xargs docker rmi'

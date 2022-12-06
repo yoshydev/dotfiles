@@ -15,7 +15,7 @@ brew cleanup
 
 # dotfiles
 echo 'generate symlink...'
-for file in .zshrc .vimrc .gitconfig .ideavimrc Brewfile
+for file in .zshrc .vimrc .gitconfig .ideavimrc Brewfile .commit_template
 do
   [ ! -e $file ] && ln -s $HOME/dotfiles/$file .
 done

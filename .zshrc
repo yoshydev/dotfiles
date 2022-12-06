@@ -47,3 +47,5 @@ alias dci='docker-compose images'
 ## Laravel sail
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 
+## Lazygit
+alias lg='lazygit'

@@ -4,7 +4,6 @@ export PGDATA="/usr/local/var/postgresql@9.6"
 path=(
   $HOME/.pyenv/shims(N-/)
   $HOME/google-cloud-sdk/bin(N-/)
-  $HOME/.nodebrew/current/bin(N-/)
   $HOME/.composer/vendor/bin(N-/)
   $HOME/.rbenv/bin(N-/)
   $HOME/.jenv/bin(N-/)
@@ -21,6 +20,8 @@ path=(
 if type "jenv" > /dev/null 2>&1; then
   eval "$(jenv init -)"
 fi
+## nodenv
+eval "$(nodenv init -)"
 
 autoload -Uz zshrc-base && zshrc-base
 autoload -Uz zshrc-zinit && zshrc-zinit
@@ -49,3 +50,4 @@ alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 
 ## Lazygit
 alias lg='lazygit'
+

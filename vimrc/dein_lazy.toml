@@ -1,39 +1,53 @@
 [[plugins]]
-# Complement
 repo = 'Shougo/ddc.vim'
-on_event = 'InsertEnter'
 depends = ['denops.vim']
+on_event = ['InsertEnter']
 hook_source = '''
-call ddc#custom#patch_global('sources', ['around', 'vim-lsp'])
-call ddc#custom#patch_global('sourceOptions', {
-  \ '_': {
-  \   'matchers': ['matcher_head'],
-  \   'sorters': ['sorter_rank'],
-  \   'converters': ['converter_remove_overlap'],
-  \ },
-  \ 'around': {'mark': 'A'},
-  \ 'vim-lsp': {
-  \   'mark': 'LSP',
-  \   'forceCompletionPattern': '\.|:|->|"\w+/*',
-  \ }})
+  call ddc#custom#patch_global('sources', ['around', 'file', 'vim-lsp'])
+  call ddc#custom#patch_global('sourceOptions', {
+        \ '_': {
+        \   'matchers': ['matcher_head'],
+        \   'sorters': ['sorter_rank'],
+        \   'converters': ['converter_remove_overlap'],
+        \ },
+        \ 'around': {
+        \   'mark': 'A',
+        \ },
+        \ 'vim-lsp': {
+        \   'mark': 'LSP',
+        \   'forceCompletionPattern': '\.|:|->|"\w+/*',
+        \ },
+        \ 'file': {
+        \   'mark': 'F',
+        \   'isVolatile': v:true,
+        \   'forceCompletionPattern': '\S/\S*',
+        \ },
+        \ })
 
-call ddc#custom#patch_global('sourceParams', {
-  \   'around': {'maxSize': 500},
-  \ })
+  call ddc#custom#patch_global(#{
+        \   ui: 'pum',
+        \   autoCompleteEvents: [
+        \     'InsertEnter', 'TextChangedI', 'TextChangedP',
+        \   ],
+        \ })
 
-inoremap <silent><expr> <TAB>
-  \ ddc#map#pum_visible() ? '<C-n>' :
-  \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-  \ '<TAB>' : ddc#map#manual_complete()
-inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
+  call ddc#enable()
+
+  inoremap <Tab> <Cmd>call pum#map#insert_relative(+1)<CR>
+  inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+  inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
 '''
 
 [[plugins]]
-# Develop environment for vim plugin
-repo = 'vim-denops/denops.vim'
+repo = 'Shougo/pum.vim'
+on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'Shougo/pum.vim'
+repo = 'Shougo/ddc-ui-pum'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'shun/ddc-vim-lsp'
 on_source = 'ddc.vim'
 
 [[plugins]]
@@ -56,10 +70,9 @@ repo = 'Shougo/ddc-converter_remove_overlap'
 on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'mattn/vim-lsp-settings'
+repo = 'Shougo/ddc-ui-native'
 on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'prabirshrestha/vim-lsp'
+repo = 'LumaKernel/ddc-file'
 on_source = 'ddc.vim'
-

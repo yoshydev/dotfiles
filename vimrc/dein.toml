@@ -2,6 +2,10 @@
 repo = 'Shougo/dein.vim'
 
 [[plugins]]
+# Develop environment for vim plugin
+repo = 'vim-denops/denops.vim'
+
+[[plugins]]
 repo = 'Shougo/neosnippet.vim'
 
 [[plugins]]
@@ -60,3 +64,9 @@ hook_add = '''
   let g:solarized_termcolors=256
 '''
 
+[[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+depends = ['vim-lsp']

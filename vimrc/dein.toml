@@ -25,6 +25,11 @@ repo = 'tpope/vim-surround'
 repo = 'w0rp/ale'
 # Ctrl + kで次の指摘へ、Ctrl + jで前の指摘へ移動
 hook_add = '''
+  let g:ale_linters = {
+  \  'typescript': ['eslint'],
+  \  'typescriptreact': ['eslint'],
+  \}
+  let g:ale_virtualtext_cursor = 'disabled'
   let g:ale_lint_on_enter = 0
   nmap <silent> <C-k> <Plug>(ale_previous_wrap)
   nmap <silent> <C-j> <Plug>(ale_next_wrap)

@@ -1,53 +1,43 @@
-export FPATH="${HOME}/dotfiles/zshrc:${FPATH}"
-export PGDATA="/usr/local/var/postgresql@9.6"
+# =============================================================================
+# Zsh Configuration Entry Point
+# =============================================================================
 
-path=(
-  $HOME/.pyenv/shims(N-/)
-  $HOME/google-cloud-sdk/bin(N-/)
-  $HOME/.composer/vendor/bin(N-/)
-  $HOME/.rbenv/bin(N-/)
-  $HOME/.jenv/bin(N-/)
-  $HOME/.local/bin(N-/)
-  /usr/local/opt/mysql-client/bin(N-/)
-  /usr/local/opt/openssl/bin(N-/)
-  /usr/local/bin(N-/)
-  $path
-)
+DOTFILES_DIR="${HOME}/dotfiles"
+ZSH_DIR="${DOTFILES_DIR}/zsh"
 
-## gvm
-[[ -s "${HOME}/.gvm/scripts/gvm" ]] && source "${HOME}/.gvm/scripts/gvm"
-## jenv
-if type "jenv" > /dev/null 2>&1; then
-  eval "$(jenv init -)"
-fi
-## nodenv
-eval "$(nodenv init -)"
+# -----------------------------------------------------------------------------
+# OS別設定（Linuxbrewなど、PATHに影響するため最初に読み込む）
+# -----------------------------------------------------------------------------
+local os_config="${ZSH_DIR}/os/$(uname | tr '[:upper:]' '[:lower:]').zsh"
+[[ -f "$os_config" ]] && source "$os_config"
 
-autoload -Uz zshrc-base && zshrc-base
-autoload -Uz zshrc-zinit && zshrc-zinit
-autoload -Uz zshrc-gc-sdk && zshrc-gc-sdk
-autoload -Uz zshrc-rbenv && zshrc-rbenv
-## Darwin or Linux
-autoload -Uz zshrc_`uname` && zshrc_`uname`
-## aws command completer
-autoload bashcompinit && bashcompinit
-complete -C '/usr/local/bin/aws_completer' aws
+# -----------------------------------------------------------------------------
+# 基本設定
+# -----------------------------------------------------------------------------
+source "${ZSH_DIR}/env.zsh"          # 環境変数
+source "${ZSH_DIR}/path.zsh"         # PATH設定
+source "${ZSH_DIR}/options.zsh"      # Zshオプション
+source "${ZSH_DIR}/history.zsh"      # ヒストリ設定
+source "${ZSH_DIR}/completion.zsh"   # 補完設定
 
-alias ls='ls -G'
-alias ll='ls -altr'
-alias vi='vim'
+# -----------------------------------------------------------------------------
+# プラグイン（Zinit）
+# -----------------------------------------------------------------------------
+source "${ZSH_DIR}/plugins.zsh"
 
-## Docker
-alias drma='docker ps -aq | xargs docker rm'
-alias drmia='docker images -aq | xargs docker rmi'
-## docker-compose
-alias dcu='docker-compose up -d'
-alias dcd='docker-compose down'
-alias dcp='docker-compose ps'
-alias dci='docker-compose images'
-## Laravel sail
-alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+# -----------------------------------------------------------------------------
+# ツール初期化
+# -----------------------------------------------------------------------------
+for tool in "${ZSH_DIR}"/tools/*.zsh; do
+  [[ -f "$tool" ]] && source "$tool"
+done
 
-## Lazygit
-alias lg='lazygit'
+# -----------------------------------------------------------------------------
+# エイリアス
+# -----------------------------------------------------------------------------
+source "${ZSH_DIR}/aliases.zsh"
 
+# -----------------------------------------------------------------------------
+# ローカル設定（git管理外）
+# -----------------------------------------------------------------------------
+[[ -f "${ZSH_DIR}/env.local.zsh" ]] && source "${ZSH_DIR}/env.local.zsh"

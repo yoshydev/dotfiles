@@ -20,9 +20,10 @@ brew "rbenv"
 brew "ruby"
 brew "vim"
 brew "yq"
-vscode "castwide.solargraph"
-vscode "dbaeumer.vscode-eslint"
-vscode "esbenp.prettier-vscode"
-vscode "github.copilot"
-vscode "github.copilot-chat"
-vscode "otoniel-isidoro.vscode-ruby-ctags"
+
+# 追加ツール
+brew "neovim"
+brew "jenv"
+
+# GUI/SDK
+cask "google-cloud-sdk"

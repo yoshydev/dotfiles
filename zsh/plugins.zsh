@@ -1,6 +1,8 @@
-### Added by Zinit's installer
+# Zinit プラグインマネージャー設定
+
+# Zinit インストール
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    print -P "%F{33}▓▒░ %F{220}Installing Zinit...%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
     command git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
@@ -11,19 +13,14 @@ source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
+# Zinit annexes
 zinit light-mode for \
     zdharma-continuum/zinit-annex-readurl \
     zdharma-continuum/zinit-annex-bin-gem-node \
     zdharma-continuum/zinit-annex-patch-dl \
     zdharma-continuum/zinit-annex-rust
 
-### End of Zinit's installer chunk
-
-
-# pacman や yaourt のパッケージリストも補完するようになる
-# 入力途中に候補をうっすら表示 & Theme
+# プラグイン
 zinit for \
     light-mode  zsh-users/zsh-completions \
     light-mode  zsh-users/zsh-autosuggestions \
@@ -32,7 +29,6 @@ zinit for \
     light-mode pick"async.zsh" src"pure.zsh" \
                 sindresorhus/pure
 
-# enhancd
-zinit ice atclone'./init.sh' nocompile'!' wait'!0' 
+# enhancd (cd強化)
+zinit ice atclone'./init.sh' nocompile'!' wait'!0'
 zinit light b4b4r07/enhancd
-

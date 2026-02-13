@@ -1,0 +1,6 @@
+customCommands:
+  - key: "C"
+    description: "AIでコミットメッセージを生成"
+    command: "czg ai"
+    context: "files"
+    subprocess: true

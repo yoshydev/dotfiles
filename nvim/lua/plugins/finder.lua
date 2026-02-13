@@ -1,6 +1,8 @@
 return {
+  -- ファジーファインダー (snacks.picker に移行)
   {
     "nvim-telescope/telescope.nvim",
+    enabled = false,
     version = "*",
     cmd = "Telescope",
     dependencies = {

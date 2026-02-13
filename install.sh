@@ -55,6 +55,7 @@ declare -a home_files=(
   ".gitconfig"
   ".ideavimrc"
   ".commit_template"
+  "commitlint.config.js"
 )
 
 for file in "${home_files[@]}"; do
@@ -85,6 +86,19 @@ if [ ! -L "$nvim_config" ]; then
   echo "  Created symlink for nvim config"
 else
   echo "  Skipping nvim config (symlink already exists)"
+fi
+
+# Lazygit設定
+lazygit_config="$HOME/.config/lazygit"
+if [ ! -L "$lazygit_config" ]; then
+  mkdir -p "$HOME/.config"
+  if [ -e "$lazygit_config" ]; then
+    mv "$lazygit_config" "$lazygit_config.backup"
+  fi
+  ln -s "$DOTFILES_DIR/lazygit" "$lazygit_config"
+  echo "  Created symlink for lazygit config"
+else
+  echo "  Skipping lazygit config (symlink already exists)"
 fi
 
 # =============================================================================

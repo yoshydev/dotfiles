@@ -23,9 +23,10 @@ return {
       },
     },
   },
-  -- インデントガイド
+  -- インデントガイド (snacks.indent に移行)
   {
     "lukas-reineke/indent-blankline.nvim",
+    enabled = false,
     event = { "BufReadPost", "BufNewFile" },
     main = "ibl",
     opts = {
@@ -33,9 +34,10 @@ return {
       scope = { enabled = true },
     },
   },
-  -- バッファライン
+  -- バッファライン (snacks.bufdelete に一部移行、タブラインは維持)
   {
     "romgrk/barbar.nvim",
+    enabled = false, -- snacksにタブラインがないため、必要なら true に戻す
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "nvim-tree/nvim-web-devicons",

@@ -14,6 +14,7 @@ local os_config="${ZSH_DIR}/os/$(uname | tr '[:upper:]' '[:lower:]').zsh"
 # -----------------------------------------------------------------------------
 # 基本設定
 # -----------------------------------------------------------------------------
+export LANG=ja_JP.UTF-8
 source "${ZSH_DIR}/env.zsh"          # 環境変数
 source "${ZSH_DIR}/path.zsh"         # PATH設定
 source "${ZSH_DIR}/options.zsh"      # Zshオプション

@@ -1,27 +1,25 @@
 return {
-  -- GitHub Copilot
+  -- GitHub Copilot (copilot.lua)
   {
-    "github/copilot.vim",
-    cmd = { "Copilot" },
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
     event = "InsertEnter",
-    config = function()
-      -- Tabで補完を受け入れ
-      vim.g.copilot_no_tab_map = true
-      vim.keymap.set("i", "<C-y>", 'copilot#Accept("<CR>")', {
-        expr = true,
-        replace_keycodes = false,
-        desc = "Copilot Accept",
-      })
-      vim.keymap.set("i", "<C-]>", "<Plug>(copilot-next)", { desc = "Copilot Next" })
-      vim.keymap.set("i", "<C-,>", "<Plug>(copilot-previous)", { desc = "Copilot Previous" })
-      vim.keymap.set("i", "<C-\\>", "<Plug>(copilot-dismiss)", { desc = "Copilot Dismiss" })
-    end,
+    opts = {
+      suggestion = { enabled = false }, -- nvim-cmpに任せる
+      panel = { enabled = false },
+    },
+  },
+  -- copilot-cmp (nvim-cmp統合)
+  {
+    "zbirenbaum/copilot-cmp",
+    dependencies = { "zbirenbaum/copilot.lua" },
+    config = true,
   },
   -- GitHub Copilot Chat
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
-      "github/copilot.vim",
+      "zbirenbaum/copilot.lua",
       "nvim-lua/plenary.nvim",
     },
     build = "make tiktoken",

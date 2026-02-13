@@ -14,7 +14,7 @@ DOTFILES_DIR="$HOME/dotfiles"
 # =============================================================================
 # Homebrew
 # =============================================================================
-echo '[1/4] Installing Homebrew...'
+echo '[1/5] Installing Homebrew...'
 if ! command -v brew &> /dev/null; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
@@ -24,7 +24,7 @@ if [ -d "/home/linuxbrew/.linuxbrew" ]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-echo '[2/4] Updating Homebrew packages...'
+echo '[2/5] Updating Homebrew packages...'
 brew doctor || true
 brew update
 brew upgrade
@@ -34,7 +34,7 @@ brew cleanup
 # =============================================================================
 # gvm (Go Version Manager)
 # =============================================================================
-echo '[3/4] Installing gvm...'
+echo '[3/5] Installing gvm...'
 if [ ! -d "$HOME/.gvm" ]; then
   echo '  Installing gvm...'
   bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
@@ -46,7 +46,7 @@ fi
 # =============================================================================
 # シンボリックリンク作成
 # =============================================================================
-echo '[4/4] Creating symlinks...'
+echo '[4/5] Creating symlinks...'
 
 # ホームディレクトリへのシンボリックリンク
 declare -a home_files=(
@@ -102,6 +102,31 @@ else
 fi
 
 # =============================================================================
+# Claude Code設定
+# =============================================================================
+echo '[5/5] Creating Claude Code config symlinks...'
+mkdir -p "$HOME/.claude"
+declare -a claude_files=(
+  "settings.json"
+  "statusline-command.sh"
+)
+for file in "${claude_files[@]}"; do
+  target="$HOME/.claude/$file"
+  source="$DOTFILES_DIR/claude/$file"
+  if [ -L "$target" ]; then
+    echo "  Skipping $file (symlink already exists)"
+  elif [ -e "$target" ]; then
+    echo "  Warning: $target exists. Backing up..."
+    mv "$target" "$target.backup"
+    ln -s "$source" "$target"
+    echo "  Created symlink for $file"
+  else
+    ln -s "$source" "$target"
+    echo "  Created symlink for $file"
+  fi
+done
+
+# =============================================================================
 # 完了メッセージ
 # =============================================================================
 echo ''
@@ -139,7 +164,10 @@ echo '   source ~/.gvm/scripts/gvm'
 echo '   gvm install go<version>'
 echo '   gvm use go<version> --default'
 echo ''
-echo '6. Initialize Google Cloud SDK (if needed):'
+echo '6. Install Claude Code (if needed):'
+echo '   curl -fsSL https://claude.ai/install.sh | sh'
+echo ''
+echo '7. Initialize Google Cloud SDK (if needed):'
 echo '   gcloud init'
 echo ''
 echo '----------------------------------------'

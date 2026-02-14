@@ -7,6 +7,7 @@ return {
     opts = {
       suggestion = { enabled = false }, -- nvim-cmpに任せる
       panel = { enabled = false },
+      copilot_node_command = vim.fn.expand("~/.nodenv/shims/node"),
     },
   },
   -- copilot-cmp (nvim-cmp統合)

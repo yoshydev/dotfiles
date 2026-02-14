@@ -65,10 +65,11 @@ rbenv install <version> && rbenv global <version>
 
 WSL上のNeovimをWindows側の既定エディタとして使うための設定。
 
-Windows側のPowerShellで以下を実行:
+WSL側のターミナルで以下を実行:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File \\wsl$\Ubuntu-20.04\home\yunip\dotfiles\windows\setup.ps1
+```bash
+cd ~/dotfiles
+powershell.exe -ExecutionPolicy Bypass -File "$(wslpath -w ./windows/setup.ps1)"
 ```
 
 setup.ps1 が行うこと:
@@ -83,8 +84,8 @@ setup.ps1 が行うこと:
 - ファイルのあるディレクトリがカレントディレクトリとして設定される
 - コマンドラインから `nvim <file>` で起動
 
-Git for Windows のエディタとして設定する場合:
+Git for Windows のエディタとして設定する場合 (setup.ps1 完了時に表示されるコマンドを使用):
 
 ```powershell
-git config --global core.editor "C:/Users/yunip/bin/nvim.bat"
+git config --global core.editor "%USERPROFILE%/bin/nvim.bat"
 ```

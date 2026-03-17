@@ -25,7 +25,7 @@ zinit for \
     light-mode  zsh-users/zsh-completions \
     light-mode  zsh-users/zsh-autosuggestions \
     light-mode  zdharma-continuum/fast-syntax-highlighting \
-                zdharma-continuum/history-search-multi-word \
+    light-mode  zdharma-continuum/history-search-multi-word \
     light-mode pick"async.zsh" src"pure.zsh" \
                 sindresorhus/pure
 

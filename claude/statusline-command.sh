@@ -40,10 +40,13 @@ if [ -n "$remaining" ]; then
   right_part="${right_part} ${remaining_int}%"
 fi
 
+# Date
+date_str=$(date '+%y-%m-%d %H:%M')
+
 # Keybinding hints
 hints="Shift+Tab: plan mode | Esc: interrupt"
 
 # Format with background color for visibility (nvim-style)
 # \033[48;5;236m = dark gray background, \033[38;5;252m = light gray text
 # \033[38;5;245m = dimmed text for hints
-printf "\033[48;5;236m\033[38;5;252m %s  %s \033[38;5;245m %s \033[0m" "$left_part" "$right_part" "$hints"
+printf "\033[48;5;236m\033[38;5;252m %s  %s  %s \033[38;5;245m %s \033[0m" "$left_part" "$right_part" "$date_str" "$hints"

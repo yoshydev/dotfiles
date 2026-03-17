@@ -31,7 +31,7 @@ wk.add({
     { "<leader>q", "<cmd>q<cr>", desc = "Quit" },
     { "<leader>w", "<cmd>w<cr>", desc = "Write" },
     -- Copilot Chat
-    { "<leader>c", group = "copilot" },
+    { "<leader>a", group = "ai" },
   },
 })
 

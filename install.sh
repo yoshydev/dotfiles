@@ -55,6 +55,7 @@ declare -a home_files=(
   ".gitconfig"
   ".ideavimrc"
   ".commit_template"
+  ".tmux.conf"
   "commitlint.config.js"
 )
 

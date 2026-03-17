@@ -1,5 +1,9 @@
 # Zshオプション設定
 
+# Emacsモードを明示（tmux内でEscがvi-modeに切り替わるのを防止）
+# プラグインより前に設定し、プラグインのbindkeyが上書きされないようにする
+bindkey -e
+
 # ディレクトリ移動
 setopt auto_cd              # コマンドじゃなければ cd する
 setopt autopushd            # cd 時に自動で push

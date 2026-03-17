@@ -12,6 +12,8 @@ opt.autoindent = true
 
 opt.smartcase = true
 
+opt.fileencodings = "utf-8,cp932,euc-jp,iso-2022-jp,default,latin1"
+
 opt.cursorline = true
 opt.showmode = true
 opt.showcmd = true

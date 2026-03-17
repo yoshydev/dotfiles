@@ -1,22 +1,4 @@
 return {
-  -- LazyGit (snacks.lazygit に移行)
-  {
-    "kdheepak/lazygit.nvim",
-    enabled = false,
-    cmd = {
-      "LazyGit",
-      "LazyGitConfig",
-      "LazyGitCurrentFile",
-      "LazyGitFilter",
-      "LazyGitFilterCurrentFile",
-    },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    keys = {
-      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-    },
-  },
   {
     "sindrets/diffview.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },

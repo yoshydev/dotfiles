@@ -4,3 +4,8 @@ customCommands:
     command: "czg ai"
     context: "files"
     subprocess: true
+  - key: "<c-f>"
+    description: "git pull --rebase --autostash"
+    command: "git pull --rebase"
+    context: "localBranches"
+    stream: true

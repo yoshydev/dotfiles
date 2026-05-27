@@ -24,6 +24,7 @@ brew "yq"
 # 追加ツール
 brew "neovim"
 brew "jenv"
+brew "tmux"
 
 # GUI/SDK
 cask "google-cloud-sdk"

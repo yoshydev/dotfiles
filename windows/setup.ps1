@@ -1,7 +1,14 @@
-# =============================================================================
+﻿# =============================================================================
 #  Windows Setup Script for dotfiles
 #  WSL上のNeovimをWindows側から利用するための設定
 # =============================================================================
+
+param(
+    # dotfiles の windows ディレクトリの Windows パス。WSL から実行する場合は
+    #   -DotfilesWinDir "$(wslpath -w ~/dotfiles/windows)"
+    # のように渡す。省略時はスクリプト自身の場所から自動解決を試みる。
+    [string]$DotfilesWinDir = ""
+)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -11,15 +18,31 @@ Write-Host "  Windows Dotfiles Setup" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# dotfilesディレクトリの取得（このスクリプトの親ディレクトリ）
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$DotfilesWinDir = $ScriptDir
+# dotfilesディレクトリの解決
+#   引数 > $PSScriptRoot > $PSCommandPath の順にフォールバック。
+#   UNCパス経由や古い PowerShell では自動変数が未定義のことがあるため、
+#   StrictMode 下でも安全に読める Get-Variable で取得する。
+if ([string]::IsNullOrEmpty($DotfilesWinDir)) {
+    $DotfilesWinDir = Get-Variable -Name PSScriptRoot -ValueOnly -ErrorAction SilentlyContinue
+}
+if ([string]::IsNullOrEmpty($DotfilesWinDir)) {
+    $cmdPath = Get-Variable -Name PSCommandPath -ValueOnly -ErrorAction SilentlyContinue
+    if (-not [string]::IsNullOrEmpty($cmdPath)) {
+        $DotfilesWinDir = Split-Path -Parent $cmdPath
+    }
+}
+if ([string]::IsNullOrEmpty($DotfilesWinDir) -or -not (Test-Path $DotfilesWinDir)) {
+    Write-Host "ERROR: dotfiles の windows ディレクトリを特定できませんでした。" -ForegroundColor Red
+    Write-Host "  次のように -DotfilesWinDir を指定して再実行してください:" -ForegroundColor Red
+    Write-Host '    ... setup.ps1 -DotfilesWinDir "$(wslpath -w ~/dotfiles/windows)"' -ForegroundColor Red
+    exit 1
+}
 $BinDir = Join-Path $env:USERPROFILE "bin"
 
 # =============================================================================
 # 1. ~/bin ディレクトリ作成
 # =============================================================================
-Write-Host "[1/3] Setting up ~/bin directory..." -ForegroundColor Yellow
+Write-Host "[1/4] Setting up ~/bin directory..." -ForegroundColor Yellow
 
 if (!(Test-Path $BinDir)) {
     New-Item -ItemType Directory -Path $BinDir | Out-Null
@@ -31,7 +54,7 @@ if (!(Test-Path $BinDir)) {
 # =============================================================================
 # 2. nvim.bat を ~/bin にコピー
 # =============================================================================
-Write-Host "[2/3] Installing nvim.bat..." -ForegroundColor Yellow
+Write-Host "[2/4] Installing nvim.bat..." -ForegroundColor Yellow
 
 $Source = Join-Path $DotfilesWinDir "nvim.bat"
 $Target = Join-Path $BinDir "nvim.bat"
@@ -40,9 +63,20 @@ Copy-Item -Path $Source -Destination $Target -Force
 Write-Host "  Copied nvim.bat -> $Target"
 
 # =============================================================================
-# 3. 環境変数の設定
+# 3. wezterm.lua を %USERPROFILE% にコピー
 # =============================================================================
-Write-Host "[3/3] Configuring environment variables..." -ForegroundColor Yellow
+Write-Host "[3/4] Installing wezterm.lua..." -ForegroundColor Yellow
+
+$WeztermSource = Join-Path $DotfilesWinDir "wezterm.lua"
+$WeztermTarget = Join-Path $env:USERPROFILE ".wezterm.lua"
+
+Copy-Item -Path $WeztermSource -Destination $WeztermTarget -Force
+Write-Host "  Copied wezterm.lua -> $WeztermTarget"
+
+# =============================================================================
+# 4. 環境変数の設定
+# =============================================================================
+Write-Host "[4/4] Configuring environment variables..." -ForegroundColor Yellow
 
 # PATH に ~/bin を追加
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
@@ -72,6 +106,7 @@ Write-Host "========================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Changes:" -ForegroundColor Cyan
 Write-Host "  - nvim.bat installed to $Target"
+Write-Host "  - wezterm.lua installed to $WeztermTarget"
 Write-Host "  - $BinDir added to user PATH"
 Write-Host "  - EDITOR set to nvim.bat"
 Write-Host ""

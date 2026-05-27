@@ -24,6 +24,7 @@ dotfiles/
 ├── claude/                 # Claude Code 設定
 ├── windows/                # Windows 連携
 │   ├── nvim.bat            #   WSL nvim ラッパー
+│   ├── wezterm.lua         #   WezTerm 設定 (WSL起動・画像プレビュー対応)
 │   └── setup.ps1           #   Windows側セットアップスクリプト
 ├── .zshrc
 ├── .vimrc
@@ -69,14 +70,19 @@ WSL側のターミナルで以下を実行:
 
 ```bash
 cd ~/dotfiles
-powershell.exe -ExecutionPolicy Bypass -File "$(wslpath -w ./windows/setup.ps1)"
+powershell.exe -ExecutionPolicy Bypass -File "$(wslpath -w ./windows/setup.ps1)" -DotfilesWinDir "$(wslpath -w ./windows)"
 ```
 
 setup.ps1 が行うこと:
 
 1. `%USERPROFILE%\bin` ディレクトリを作成
 2. `nvim.bat` を配置
-3. 環境変数を設定 (`PATH` に `~/bin` を追加、`EDITOR` を設定)
+3. `wezterm.lua` を `%USERPROFILE%\.wezterm.lua` に配置
+4. 環境変数を設定 (`PATH` に `~/bin` を追加、`EDITOR` を設定)
+
+> WezTerm 本体は `winget install wez.wezterm` で別途インストールする。
+> 画像プレビュー (kitty graphics protocol) は素の WSL シェルで動作する。
+> tmux 経由で使う場合は tmux 3.3a 以降 + `set -g allow-passthrough on` が必要。
 
 完了後、ターミナルを再起動すれば以下が可能:
 

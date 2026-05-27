@@ -18,7 +18,11 @@ local config = wezterm.config_builder()
 -- ---------------------------------------------------------------------------
 config.font = wezterm.font 'Moralerspace Neon HW'
 config.font_size = 11.0
-config.use_ime = true -- 日本語入力 (WSLg では fcitx5 等の設定が別途必要)
+config.use_ime = true -- 日本語入力
+
+-- WSLg では Wayland 経由の IME が不安定 (fcitx5 が即死) なため、XWayland で動かし
+-- fcitx5(--disable=wayland で X11 起動) と XIM 経由で連携する。linux.zsh も参照。
+config.enable_wayland = false
 
 -- ---------------------------------------------------------------------------
 -- WSLg(Wayland) でカーソルテーマが見つからないエラーの対策。

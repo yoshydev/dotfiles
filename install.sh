@@ -102,6 +102,19 @@ else
   echo "  Skipping lazygit config (symlink already exists)"
 fi
 
+# WezTerm設定 (Linux版 / WSL + WSLg)
+wezterm_config="$HOME/.config/wezterm"
+if [ ! -L "$wezterm_config" ]; then
+  mkdir -p "$HOME/.config"
+  if [ -e "$wezterm_config" ]; then
+    mv "$wezterm_config" "$wezterm_config.backup"
+  fi
+  ln -s "$DOTFILES_DIR/wezterm" "$wezterm_config"
+  echo "  Created symlink for wezterm config"
+else
+  echo "  Skipping wezterm config (symlink already exists)"
+fi
+
 # =============================================================================
 # Claude Code設定
 # =============================================================================

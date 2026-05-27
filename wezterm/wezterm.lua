@@ -110,4 +110,10 @@ wezterm.on('update-status', function(window, pane)
   })
 end)
 
+-- 起動時にフルスクリーン表示にする
+wezterm.on('gui-startup', function(cmd)
+  local _, _, window = wezterm.mux.spawn_window(cmd or {})
+  window:gui_window():toggle_fullscreen()
+end)
+
 return config

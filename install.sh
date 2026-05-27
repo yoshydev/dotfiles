@@ -115,6 +115,19 @@ else
   echo "  Skipping wezterm config (symlink already exists)"
 fi
 
+# fcitx5 設定 (IME切替キー: 右Alt=日本語 / 左Alt=英語)
+fcitx5_config="$HOME/.config/fcitx5/config"
+if [ ! -L "$fcitx5_config" ]; then
+  mkdir -p "$HOME/.config/fcitx5"
+  if [ -e "$fcitx5_config" ]; then
+    mv "$fcitx5_config" "$fcitx5_config.backup"
+  fi
+  ln -s "$DOTFILES_DIR/fcitx5/config" "$fcitx5_config"
+  echo "  Created symlink for fcitx5 config"
+else
+  echo "  Skipping fcitx5 config (symlink already exists)"
+fi
+
 # =============================================================================
 # Claude Code設定
 # =============================================================================

@@ -11,13 +11,20 @@ local wezterm = require 'wezterm'
 local act = wezterm.action
 local config = wezterm.config_builder()
 
+-- マシン固有のローカル設定 (git 管理外の wezterm/local.lua)。
+-- 背景画像パスなど、リポジトリに含めたくない設定をここから読む。
+local has_local, local_cfg = pcall(dofile, wezterm.config_dir .. '/local.lua')
+if not has_local or type(local_cfg) ~= 'table' then
+  local_cfg = {}
+end
+
 -- Linux 版はローカル(WSL)シェルを直接起動するため default_domain は不要。
 
 -- ---------------------------------------------------------------------------
 -- フォント (Windows 側からコピーした Moralerspace Neon HW = Nerd Font 内蔵)
 -- ---------------------------------------------------------------------------
 config.font = wezterm.font 'Moralerspace Neon HW'
-config.font_size = 11.0
+config.font_size = 14.0
 config.use_ime = true -- 日本語入力
 
 -- WSLg では Wayland 経由の IME が不安定 (fcitx5 が即死) なため、XWayland で動かし
@@ -43,8 +50,24 @@ config.scrollback_lines = 10000
 config.window_close_confirmation = 'NeverPrompt'
 config.adjust_window_size_when_changing_font_size = false
 config.window_padding = { left = 4, right = 4, top = 4, bottom = 4 }
-config.inactive_pane_hsb = { saturation = 0.9, brightness = 0.6 }
+-- 背景画像を使うため非アクティブペインの暗化(inactive_pane_hsb)は効かない。
+-- ペインの区別は分割線(split)の色で行う。
 config.colors = { split = '#ff5fd7' }
+
+-- 背景画像 (パスは git 管理外の local.lua で background_image に指定したときのみ有効)。
+-- hsb.brightness で画像自体の明るさを調整 (下げるほど暗い。0.1=ほぼ黒, 0.3=薄め)。
+if local_cfg.background_image then
+  config.background = {
+    {
+      source = { File = local_cfg.background_image },
+      hsb = { brightness = local_cfg.background_brightness or 0.20 },
+      horizontal_align = 'Center',
+      vertical_align = 'Middle',
+    },
+  }
+end
+-- ウィンドウ全体の透過 (XWayland/WSLg では効かないことがある)
+config.window_background_opacity = 0.95
 
 -- ---------------------------------------------------------------------------
 -- タブ/ペイン操作: tmux 風キーバインド (leader = Ctrl+b)

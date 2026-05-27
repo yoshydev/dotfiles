@@ -113,7 +113,31 @@ sudo apt install -y dmz-cursor-theme
 mkdir -p ~/.local/share/fonts
 cp /mnt/c/Users/<user>/AppData/Local/Microsoft/Windows/Fonts/MoralerspaceNeonHW-*.ttf ~/.local/share/fonts/
 fc-cache -f
+
+# 日本語入力 (IME): fcitx5 + Mozc
+sudo apt install -y fcitx5 fcitx5-mozc
 ```
 
 設定 `wezterm/wezterm.lua` は install.sh が `~/.config/wezterm` へリンクする。
 起動は WSL 内で `wezterm` (WSLg 経由で Windows デスクトップにウィンドウが開く)。
+
+#### 背景画像 (ローカル設定)
+
+背景画像のパスは個人環境依存のため、git 管理外の `wezterm/local.lua` に書く
+(`.gitignore` 済み)。各マシンで手動作成する:
+
+```lua
+-- wezterm/local.lua
+return {
+  background_image = '/mnt/c/Users/<user>/.../wallpaper.jpg',
+  background_brightness = 0.20, -- 0.1=ほぼ黒, 0.3=薄め (省略時 0.20)
+}
+```
+
+#### 日本語入力 (IME)
+
+fcitx5 + Mozc を使用。`fcitx5-configtool` で入力メソッドに Mozc を追加する。
+切替キーは `fcitx5/config` (install.sh が `~/.config/fcitx5/config` へリンク) で
+**右Alt=日本語ON / 左Alt=英語** に設定済み。WSLg では wayland アドオンが
+表示接続を維持できず即死するため、`fcitx5 --disable=wayland -d` で起動する
+(zsh の `os/linux.zsh` が WSLg セッションで自動起動)。

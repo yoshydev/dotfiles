@@ -133,8 +133,13 @@ wezterm.on('update-status', function(window, pane)
   })
 end)
 
--- 起動時にフルスクリーン表示にする
+-- 起動時の処理
 wezterm.on('gui-startup', function(cmd)
+  -- IME(fcitx5) を replace(-r) 起動して新鮮な XIM サーバーに繋ぎ直す。
+  -- XIM は再接続に弱く、WezTerm を開き直すと古い fcitx5 への接続が腐って
+  -- 日本語切替が効かなくなるため、ウィンドウ起動のたびに起動し直す。
+  wezterm.background_child_process { 'fcitx5', '--disable=wayland', '-r', '-d' }
+  -- フルスクリーン表示
   local _, _, window = wezterm.mux.spawn_window(cmd or {})
   window:gui_window():toggle_fullscreen()
 end)

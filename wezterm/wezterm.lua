@@ -133,15 +133,29 @@ wezterm.on('update-status', function(window, pane)
   })
 end)
 
--- 起動時の処理
-wezterm.on('gui-startup', function(cmd)
+-- 起動時の処理 (各ウィンドウの初回に実行)
+--
+-- gui-startup は mux/GUI インスタンスが新規起動した最初の1回しか発火しない。
+-- WezTerm はデフォルトで既存インスタンスに新規ウィンドウをアタッチするため、
+-- 2回目以降の起動では gui-startup が走らず、フルスクリーン化も fcitx5 再起動も
+-- されなかった。そこで、各ウィンドウの初回に必ず発火する window-config-reloaded
+-- に処理を移し、window_id ごとのガードで「ウィンドウ初回のみ」実行する。
+-- (設定リロードのたびに発火するイベントだが、ガードで2回目以降は素通りするため
+--  ユーザーが手動でフルスクリーンを解除しても勝手に戻らない。)
+local window_initialized = {}
+wezterm.on('window-config-reloaded', function(window)
+  local id = window:window_id()
+  if window_initialized[id] then
+    return
+  end
+  window_initialized[id] = true
+
   -- IME(fcitx5) を replace(-r) 起動して新鮮な XIM サーバーに繋ぎ直す。
   -- XIM は再接続に弱く、WezTerm を開き直すと古い fcitx5 への接続が腐って
   -- 日本語切替が効かなくなるため、ウィンドウ起動のたびに起動し直す。
   wezterm.background_child_process { 'fcitx5', '--disable=wayland', '-r', '-d' }
   -- フルスクリーン表示
-  local _, _, window = wezterm.mux.spawn_window(cmd or {})
-  window:gui_window():toggle_fullscreen()
+  window:toggle_fullscreen()
 end)
 
 return config

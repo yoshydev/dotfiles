@@ -135,9 +135,11 @@ return {
         pattern = "VeryLazy",
         callback = function()
           -- グローバル関数として設定
+          ---@diagnostic disable-next-line: duplicate-set-field
           _G.dd = function(...)
             Snacks.debug.inspect(...)
           end
+          ---@diagnostic disable-next-line: duplicate-set-field
           _G.bt = function()
             Snacks.debug.backtrace()
           end

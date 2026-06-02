@@ -1,4 +1,15 @@
 return {
+  -- lazydev: Lua開発時にNeovim/プラグインの型情報をlua_lsへ供給
+  {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      library = {
+        -- snacks.nvim のグローバル `Snacks` を認識させ、補完・型チェックを有効化
+        { path = "snacks.nvim", words = { "Snacks" } },
+      },
+    },
+  },
   -- Mason: LSPサーバー管理
   {
     "williamboman/mason.nvim",
@@ -48,8 +59,8 @@ return {
           map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
           map("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
           map("n", "<leader>D", vim.lsp.buf.type_definition, "Type Definition")
-          map("n", "[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
-          map("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
+          map("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Previous Diagnostic")
+          map("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, "Next Diagnostic")
         end,
       })
 

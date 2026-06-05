@@ -16,9 +16,8 @@
       "Bash(nano *.env*)",
       "Bash(bat *.env*)"
     ],
-    "defaultMode": "plan"
+    "defaultMode": "auto"
   },
-  "useAutoModeDuringPlan": true,
   "statusLine": {
     "type": "command",
     "command": "/bin/bash $HOME/.claude/statusline-command.sh"
@@ -26,6 +25,18 @@
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true
   },
-  "effortLevel": "high",
-  "skipAutoPermissionPrompt": true
+  "extraKnownMarketplaces": {
+    "freee-mcp-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "freee/freee-mcp"
+      }
+    }
+  },
+  "effortLevel": "medium",
+  "skipAutoPermissionPrompt": true,
+  "useAutoModeDuringPlan": true,
+  "env": {
+    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1"
+  }
 }

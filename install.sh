@@ -128,6 +128,24 @@ else
   echo "  Skipping fcitx5 config (symlink already exists)"
 fi
 
+# fcitx5 systemd ユーザーサービス (起動経路をここに一本化。詳細は fcitx5/fcitx5.service)
+fcitx5_service="$HOME/.config/systemd/user/fcitx5.service"
+if [ ! -L "$fcitx5_service" ]; then
+  mkdir -p "$HOME/.config/systemd/user"
+  if [ -e "$fcitx5_service" ]; then
+    mv "$fcitx5_service" "$fcitx5_service.backup"
+  fi
+  ln -s "$DOTFILES_DIR/fcitx5/fcitx5.service" "$fcitx5_service"
+  echo "  Created symlink for fcitx5.service"
+else
+  echo "  Skipping fcitx5.service (symlink already exists)"
+fi
+if command -v systemctl &> /dev/null; then
+  systemctl --user daemon-reload
+  systemctl --user enable fcitx5.service
+  echo "  Enabled fcitx5.service (systemd user unit)"
+fi
+
 # =============================================================================
 # Claude Code設定
 # =============================================================================

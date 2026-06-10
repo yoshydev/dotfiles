@@ -9,15 +9,13 @@ fi
 # 日本語入力 (IME): WSLg + fcitx5
 #   WAYLAND_DISPLAY がある = WSLg セッション。fcitx5 を IME として使う。
 #   (WezTerm 等の端末で日本語入力するための設定)
+#
+#   fcitx5 本体の起動は systemd ユーザーサービス (fcitx5.service) に一本化した。
+#   ここで起動すると wezterm フックとの二重起動レースで XIM が詰まるため、
+#   シェルからは環境変数の設定のみ行う。詳細は fcitx5/fcitx5.service を参照。
 # -----------------------------------------------------------------------------
 if [ -n "$WAYLAND_DISPLAY" ]; then
   export GTK_IM_MODULE=fcitx
   export QT_IM_MODULE=fcitx
   export XMODIFIERS=@im=fcitx
-  # fcitx5 デーモンが未起動なら起動する。
-  # WSLg では wayland アドオンが表示接続を維持できず即死するため、
-  # --disable=wayland で無効化し X11(XWayland) 経由で動かす。
-  if command -v fcitx5 >/dev/null 2>&1 && ! pgrep -x fcitx5 >/dev/null 2>&1; then
-    fcitx5 --disable=wayland -d >/dev/null 2>&1
-  fi
 fi

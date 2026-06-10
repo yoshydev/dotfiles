@@ -140,25 +140,30 @@ end)
 --
 -- gui-startup は mux/GUI インスタンスが新規起動した最初の1回しか発火しない。
 -- WezTerm はデフォルトで既存インスタンスに新規ウィンドウをアタッチするため、
--- 2回目以降の起動では gui-startup が走らず、フルスクリーン化も fcitx5 再起動も
--- されなかった。そこで、各ウィンドウの初回に必ず発火する window-config-reloaded
--- に処理を移し、window_id ごとのガードで「ウィンドウ初回のみ」実行する。
--- (設定リロードのたびに発火するイベントだが、ガードで2回目以降は素通りするため
---  ユーザーが手動でフルスクリーンを解除しても勝手に戻らない。)
-local window_initialized = {}
+-- 2回目以降の起動では gui-startup が走らない。そこで、各ウィンドウの初回に必ず
+-- 発火する window-config-reloaded に処理を置き、ウィンドウごとのガードで
+-- 「初回のみ」実行する。
+--
+-- ガードは wezterm.GLOBAL に置く。ローカル変数だと設定リロードのたびに Lua の
+-- 状態ごと作り直されてガードが消え、既存ウィンドウでも処理が再実行されてしまう
+-- (wezterm.lua を保存するたびにフルスクリーンがトグルする) ため。
+--
+-- ※ fcitx5 の起動はここでは行わない。以前は -r で起動し直していたが、PC 再起動後の
+--   初回起動時に zsh 側の起動と競合し、「WezTerm が接続した直後の fcitx5 を kill」
+--   するレースで XIM クライアントのキューが詰まり IME が効かなくなっていた。
+--   fcitx5 は systemd ユーザーサービス (fcitx5/fcitx5.service) が起動・維持する。
 wezterm.on('window-config-reloaded', function(window)
-  local id = window:window_id()
-  if window_initialized[id] then
+  wezterm.GLOBAL.window_initialized = wezterm.GLOBAL.window_initialized or {}
+  local id = tostring(window:window_id())
+  if wezterm.GLOBAL.window_initialized[id] then
     return
   end
-  window_initialized[id] = true
+  wezterm.GLOBAL.window_initialized[id] = true
 
-  -- IME(fcitx5) を replace(-r) 起動して新鮮な XIM サーバーに繋ぎ直す。
-  -- XIM は再接続に弱く、WezTerm を開き直すと古い fcitx5 への接続が腐って
-  -- 日本語切替が効かなくなるため、ウィンドウ起動のたびに起動し直す。
-  wezterm.background_child_process { 'fcitx5', '--disable=wayland', '-r', '-d' }
-  -- フルスクリーン表示
-  window:toggle_fullscreen()
+  -- フルスクリーン表示 (既にフルスクリーンなら何もしない)
+  if not window:get_dimensions().is_full_screen then
+    window:toggle_fullscreen()
+  end
 end)
 
 return config

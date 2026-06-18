@@ -146,6 +146,23 @@ if command -v systemctl &> /dev/null; then
   echo "  Enabled fcitx5.service (systemd user unit)"
 fi
 
+# WSLg ショートカットから起動される wezterm に IME 環境変数を注入するラッパー。
+# WSLg の `.lnk` は `wslg.exe ... -- wezterm` 固定で、PAM を通らないため
+# /etc/environment も zsh export も継承されない。/usr/local/bin に置いて
+# /usr/bin/wezterm を shadow する。詳細は wezterm/wezterm-launcher.sh のコメント。
+wezterm_launcher="/usr/local/bin/wezterm"
+wezterm_launcher_src="$DOTFILES_DIR/wezterm/wezterm-launcher.sh"
+if [ ! -L "$wezterm_launcher" ] || [ "$(readlink "$wezterm_launcher")" != "$wezterm_launcher_src" ]; then
+  if command -v sudo &> /dev/null; then
+    sudo ln -sf "$wezterm_launcher_src" "$wezterm_launcher"
+    echo "  Created symlink for wezterm launcher (/usr/local/bin/wezterm)"
+  else
+    echo "  Warning: sudo not available; skipped /usr/local/bin/wezterm symlink"
+  fi
+else
+  echo "  Skipping wezterm launcher (symlink already exists)"
+fi
+
 # =============================================================================
 # Claude Code設定
 # =============================================================================

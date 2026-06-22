@@ -28,7 +28,8 @@ config.font_size = 14.0
 config.use_ime = true -- 日本語入力
 
 -- WSLg では Wayland 経由の IME が不安定 (fcitx5 が即死) なため、XWayland で動かし
--- fcitx5(--disable=wayland で X11 起動) と XIM 経由で連携する。linux.zsh も参照。
+-- fcitx5 (--disable=wayland) と XIM 経由で連携する。
+-- IME 環境変数の注入とコールドブート対策は wezterm/wezterm-launcher.sh ラッパー。
 config.enable_wayland = false
 
 -- ---------------------------------------------------------------------------
@@ -147,11 +148,6 @@ end)
 -- ガードは wezterm.GLOBAL に置く。ローカル変数だと設定リロードのたびに Lua の
 -- 状態ごと作り直されてガードが消え、既存ウィンドウでも処理が再実行されてしまう
 -- (wezterm.lua を保存するたびにフルスクリーンがトグルする) ため。
---
--- ※ fcitx5 の起動はここでは行わない。以前は -r で起動し直していたが、PC 再起動後の
---   初回起動時に zsh 側の起動と競合し、「WezTerm が接続した直後の fcitx5 を kill」
---   するレースで XIM クライアントのキューが詰まり IME が効かなくなっていた。
---   fcitx5 は systemd ユーザーサービス (fcitx5/fcitx5.service) が起動・維持する。
 wezterm.on('window-config-reloaded', function(window)
   wezterm.GLOBAL.window_initialized = wezterm.GLOBAL.window_initialized or {}
   local id = tostring(window:window_id())

@@ -138,6 +138,13 @@ return {
 
 fcitx5 + Mozc を使用。`fcitx5-configtool` で入力メソッドに Mozc を追加する。
 切替キーは `fcitx5/config` (install.sh が `~/.config/fcitx5/config` へリンク) で
-**右Alt=日本語ON / 左Alt=英語** に設定済み。WSLg では wayland アドオンが
-表示接続を維持できず即死するため、`fcitx5 --disable=wayland -d` で起動する
-(zsh の `os/linux.zsh` が WSLg セッションで自動起動)。
+**右Alt=日本語ON / 左Alt=英語** に設定済み。
+
+起動経路:
+
+- fcitx5 本体は systemd ユーザーサービス `fcitx5.service` が起動 (install.sh が
+  symlink + enable)。WSLg では wayland アドオンが即死するため
+  `--disable=wayland` で X11 (XIM) 経由で動かす。
+- wezterm からの連携は `/usr/local/bin/wezterm` ラッパー
+  (`wezterm/wezterm-launcher.sh`) が担当: IME 環境変数の注入、XIM_SERVERS
+  登録待ち、コールドブート時の fcitx5 再起動対策。詳細はラッパー冒頭コメント。

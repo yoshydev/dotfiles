@@ -28,3 +28,4 @@ brew "tmux"
 
 # GUI/SDK
 cask "google-cloud-sdk"
+brew "tree-sitter-cli"

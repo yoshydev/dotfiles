@@ -31,6 +31,7 @@ return {
           "lua_ls",
           "ts_ls",
           "pyright",
+          "svelte",
         },
         automatic_installation = true,
       })
@@ -84,8 +85,12 @@ return {
         capabilities = capabilities,
       })
 
+      vim.lsp.config("svelte", {
+        capabilities = capabilities,
+      })
+
       -- LSPサーバーを有効化
-      vim.lsp.enable({ "lua_ls", "ts_ls", "pyright" })
+      vim.lsp.enable({ "lua_ls", "ts_ls", "pyright", "svelte" })
     end,
   },
 }

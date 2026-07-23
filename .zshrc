@@ -47,3 +47,7 @@ source "${ZSH_DIR}/aliases.zsh"
 # ローカル設定（git管理外）
 # -----------------------------------------------------------------------------
 [[ -f "${ZSH_DIR}/env.local.zsh" ]] && source "${ZSH_DIR}/env.local.zsh"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

@@ -18,12 +18,15 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "claude-fable-5[1m]",
   "statusLine": {
     "type": "command",
     "command": "/bin/bash $HOME/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "codex@openai-codex": true,
+    "frontend-design@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "freee-mcp-marketplace": {
@@ -31,12 +34,17 @@
         "source": "github",
         "repo": "freee/freee-mcp"
       }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
     }
   },
   "effortLevel": "medium",
+  "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
   "skipAutoPermissionPrompt": true,
-  "useAutoModeDuringPlan": true,
-  "env": {
-    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1"
-  }
+  "useAutoModeDuringPlan": true
 }

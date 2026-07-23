@@ -2,6 +2,7 @@ return {
   -- GitHub Copilot (copilot.lua)
   {
     "zbirenbaum/copilot.lua",
+    enabled = false,
     cmd = "Copilot",
     event = "InsertEnter",
     opts = {
@@ -13,12 +14,14 @@ return {
   -- copilot-cmp (nvim-cmp統合)
   {
     "zbirenbaum/copilot-cmp",
+    enabled = false,
     dependencies = { "zbirenbaum/copilot.lua" },
     config = true,
   },
   -- GitHub Copilot Chat
   {
     "CopilotC-Nvim/CopilotChat.nvim",
+    enabled = false,
     dependencies = {
       "zbirenbaum/copilot.lua",
       "nvim-lua/plenary.nvim",

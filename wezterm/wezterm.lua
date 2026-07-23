@@ -74,9 +74,9 @@ config.window_background_opacity = 0.95
 config.audible_bell = 'Disabled'
 
 -- ---------------------------------------------------------------------------
--- タブ/ペイン操作: tmux 風キーバインド (leader = Ctrl+b)
+-- タブ/ペイン操作: tmux 風キーバインド (leader = Ctrl+q)
 -- ---------------------------------------------------------------------------
-config.leader = { key = 'b', mods = 'CTRL', timeout_milliseconds = 1000 }
+config.leader = { key = 'q', mods = 'CTRL', timeout_milliseconds = 1000 }
 config.tab_and_split_indices_are_zero_based = false
 
 config.keys = {
@@ -107,8 +107,8 @@ config.keys = {
   { key = '[', mods = 'LEADER', action = act.ActivateCopyMode },
   { key = ']', mods = 'LEADER', action = act.PasteFrom 'Clipboard' },
 
-  -- Ctrl+b 自体をシェルへ送る
-  { key = 'b', mods = 'LEADER|CTRL', action = act.SendKey { key = 'b', mods = 'CTRL' } },
+  -- Ctrl+q 自体をシェルへ送る
+  { key = 'q', mods = 'LEADER|CTRL', action = act.SendKey { key = 'q', mods = 'CTRL' } },
 }
 
 -- LEADER + 数字でタブを直接選択

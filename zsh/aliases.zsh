@@ -20,3 +20,7 @@ alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 
 # Lazygit
 alias lg='lazygit'
+
+# NixOS (設定は ~/dotfiles/nixos、/etc/nixos はそこへの symlink)
+alias nrs='sudo nixos-rebuild switch --flake ~/dotfiles/nixos#nixos'
+alias nrb='sudo nixos-rebuild build --flake ~/dotfiles/nixos#nixos'

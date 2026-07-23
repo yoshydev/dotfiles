@@ -40,6 +40,26 @@ if [ -n "$remaining" ]; then
   right_part="${right_part} ${remaining_int}%"
 fi
 
+# claude-code update check (cache read only; refresh runs in background)
+cc_version=$(echo "$input" | jq -r '.version // empty')
+update_cache="$HOME/.cache/claude-statusline/update-check"
+if [ ! -f "$update_cache" ] || [ $(($(date +%s) - $(stat -c %Y "$update_cache"))) -gt 21600 ]; then
+  (setsid bash "$HOME/.claude/statusline-update-check.sh" >/dev/null 2>&1 &)
+fi
+if [ -n "$cc_version" ] && [ -f "$update_cache" ]; then
+  nixpkgs_ver=$(grep '^nixpkgs=' "$update_cache" | cut -d= -f2)
+  npm_ver=$(grep '^npm=' "$update_cache" | cut -d= -f2)
+  is_newer() {
+    [ -n "$1" ] && [ "$1" != "$2" ] &&
+      [ "$(printf '%s\n%s' "$1" "$2" | sort -V | tail -1)" = "$1" ]
+  }
+  if is_newer "$nixpkgs_ver" "$cc_version"; then
+    right_part="${right_part} ⬆${nixpkgs_ver} flake update可"
+  elif is_newer "$npm_ver" "$cc_version"; then
+    right_part="${right_part} ⏳${npm_ver} nixpkgs待ち"
+  fi
+fi
+
 # Date
 date_str=$(date '+%y-%m-%d %H:%M')
 

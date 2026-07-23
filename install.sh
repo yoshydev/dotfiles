@@ -102,7 +102,7 @@ else
   echo "  Skipping lazygit config (symlink already exists)"
 fi
 
-# WezTerm設定 (Linux版 / WSL + WSLg)
+# WezTerm設定 (WSL側 = wezterm-mux-server 用。GUI は Windows 版 + windows/setup.ps1)
 wezterm_config="$HOME/.config/wezterm"
 if [ ! -L "$wezterm_config" ]; then
   mkdir -p "$HOME/.config"
@@ -115,52 +115,31 @@ else
   echo "  Skipping wezterm config (symlink already exists)"
 fi
 
-# fcitx5 設定 (IME切替キー: 右Alt=日本語 / 左Alt=英語)
-fcitx5_config="$HOME/.config/fcitx5/config"
-if [ ! -L "$fcitx5_config" ]; then
-  mkdir -p "$HOME/.config/fcitx5"
-  if [ -e "$fcitx5_config" ]; then
-    mv "$fcitx5_config" "$fcitx5_config.backup"
-  fi
-  ln -s "$DOTFILES_DIR/fcitx5/config" "$fcitx5_config"
-  echo "  Created symlink for fcitx5 config"
-else
-  echo "  Skipping fcitx5 config (symlink already exists)"
-fi
-
-# fcitx5 systemd ユーザーサービス (起動経路をここに一本化。詳細は fcitx5/fcitx5.service)
-fcitx5_service="$HOME/.config/systemd/user/fcitx5.service"
-if [ ! -L "$fcitx5_service" ]; then
-  mkdir -p "$HOME/.config/systemd/user"
-  if [ -e "$fcitx5_service" ]; then
-    mv "$fcitx5_service" "$fcitx5_service.backup"
-  fi
-  ln -s "$DOTFILES_DIR/fcitx5/fcitx5.service" "$fcitx5_service"
-  echo "  Created symlink for fcitx5.service"
-else
-  echo "  Skipping fcitx5.service (symlink already exists)"
-fi
-if command -v systemctl &> /dev/null; then
-  systemctl --user daemon-reload
-  systemctl --user enable fcitx5.service
-  echo "  Enabled fcitx5.service (systemd user unit)"
-fi
-
-# WSLg ショートカットから起動される wezterm に IME 環境変数を注入するラッパー。
-# WSLg の `.lnk` は `wslg.exe ... -- wezterm` 固定で、PAM を通らないため
-# /etc/environment も zsh export も継承されない。/usr/local/bin に置いて
-# /usr/bin/wezterm を shadow する。詳細は wezterm/wezterm-launcher.sh のコメント。
-wezterm_launcher="/usr/local/bin/wezterm"
-wezterm_launcher_src="$DOTFILES_DIR/wezterm/wezterm-launcher.sh"
-if [ ! -L "$wezterm_launcher" ] || [ "$(readlink "$wezterm_launcher")" != "$wezterm_launcher_src" ]; then
+# 旧構成 (WSLg + Linux版wezterm + fcitx5) の掃除。dotfiles を指す残骸のみ削除する。
+# 詳細は git 履歴 (wezterm/wezterm-launcher.sh, fcitx5/) を参照。
+old_wezterm_launcher="/usr/local/bin/wezterm"
+if [ -L "$old_wezterm_launcher" ] && [[ "$(readlink "$old_wezterm_launcher")" == "$DOTFILES_DIR"/* ]]; then
   if command -v sudo &> /dev/null; then
-    sudo ln -sf "$wezterm_launcher_src" "$wezterm_launcher"
-    echo "  Created symlink for wezterm launcher (/usr/local/bin/wezterm)"
+    sudo rm -f "$old_wezterm_launcher"
+    echo "  Removed legacy wezterm launcher ($old_wezterm_launcher)"
   else
-    echo "  Warning: sudo not available; skipped /usr/local/bin/wezterm symlink"
+    echo "  Warning: sudo not available; leave legacy $old_wezterm_launcher"
   fi
-else
-  echo "  Skipping wezterm launcher (symlink already exists)"
+fi
+
+old_fcitx5_service="$HOME/.config/systemd/user/fcitx5.service"
+if [ -L "$old_fcitx5_service" ] && [[ "$(readlink "$old_fcitx5_service")" == "$DOTFILES_DIR"/* ]]; then
+  if command -v systemctl &> /dev/null; then
+    systemctl --user disable fcitx5.service 2>/dev/null || true
+  fi
+  rm -f "$old_fcitx5_service"
+  echo "  Removed legacy fcitx5.service"
+fi
+
+old_fcitx5_config="$HOME/.config/fcitx5/config"
+if [ -L "$old_fcitx5_config" ] && [[ "$(readlink "$old_fcitx5_config")" == "$DOTFILES_DIR"/* ]]; then
+  rm -f "$old_fcitx5_config"
+  echo "  Removed legacy fcitx5 config symlink"
 fi
 
 # =============================================================================
@@ -171,6 +150,7 @@ mkdir -p "$HOME/.claude"
 declare -a claude_files=(
   "settings.json"
   "statusline-command.sh"
+  "statusline-update-check.sh"
 )
 for file in "${claude_files[@]}"; do
   target="$HOME/.claude/$file"

@@ -2,4 +2,3 @@ gitconfig
 
 # ローカル専用設定
 zsh/env.local.zsh
-wezterm/local.lua

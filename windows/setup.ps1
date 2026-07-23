@@ -1,6 +1,7 @@
 ﻿# =============================================================================
 #  Windows Setup Script for dotfiles
-#  WSL上のNeovimをWindows側から利用するための設定
+#  WSL上のNeovimをWindows側から利用するための設定 +
+#  Windows版 WezTerm (WSL/NixOS への mux 接続) の設定配置
 # =============================================================================
 
 param(
@@ -42,7 +43,7 @@ $BinDir = Join-Path $env:USERPROFILE "bin"
 # =============================================================================
 # 1. ~/bin ディレクトリ作成
 # =============================================================================
-Write-Host "[1/3] Setting up ~/bin directory..." -ForegroundColor Yellow
+Write-Host "[1/4] Setting up ~/bin directory..." -ForegroundColor Yellow
 
 if (!(Test-Path $BinDir)) {
     New-Item -ItemType Directory -Path $BinDir | Out-Null
@@ -54,7 +55,7 @@ if (!(Test-Path $BinDir)) {
 # =============================================================================
 # 2. nvim.bat を ~/bin にコピー
 # =============================================================================
-Write-Host "[2/3] Installing nvim.bat..." -ForegroundColor Yellow
+Write-Host "[2/4] Installing nvim.bat..." -ForegroundColor Yellow
 
 $Source = Join-Path $DotfilesWinDir "nvim.bat"
 $Target = Join-Path $BinDir "nvim.bat"
@@ -63,9 +64,22 @@ Copy-Item -Path $Source -Destination $Target -Force
 Write-Host "  Copied nvim.bat -> $Target"
 
 # =============================================================================
-# 3. 環境変数の設定
+# 3. WezTerm 設定を %USERPROFILE%\.wezterm.lua にコピー
+#    (シンボリックリンクは開発者モード/管理者権限が必要なためコピー方式。
+#     .wezterm.lua を直接編集した場合は windows/wezterm.lua へ反映すること)
 # =============================================================================
-Write-Host "[3/3] Configuring environment variables..." -ForegroundColor Yellow
+Write-Host "[3/4] Installing wezterm config..." -ForegroundColor Yellow
+
+$WeztermSource = Join-Path $DotfilesWinDir "wezterm.lua"
+$WeztermTarget = Join-Path $env:USERPROFILE ".wezterm.lua"
+
+Copy-Item -Path $WeztermSource -Destination $WeztermTarget -Force
+Write-Host "  Copied wezterm.lua -> $WeztermTarget"
+
+# =============================================================================
+# 4. 環境変数の設定
+# =============================================================================
+Write-Host "[4/4] Configuring environment variables..." -ForegroundColor Yellow
 
 # PATH に ~/bin を追加
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
@@ -95,6 +109,7 @@ Write-Host "========================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Changes:" -ForegroundColor Cyan
 Write-Host "  - nvim.bat installed to $Target"
+Write-Host "  - wezterm.lua installed to $WeztermTarget"
 Write-Host "  - $BinDir added to user PATH"
 Write-Host "  - EDITOR set to nvim.bat"
 Write-Host ""

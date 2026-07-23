@@ -1,6 +1,6 @@
 # dotfiles
 
-WSL2 (Ubuntu) 環境の開発設定ファイル群。
+WSL2 (NixOS) 環境の開発設定ファイル群。
 
 ## 構成
 
@@ -21,10 +21,11 @@ dotfiles/
 │   └── plugins.zsh         #   Zinit プラグイン
 ├── nvim/                   # Neovim 設定 (lazy.nvim)
 ├── lazygit/                # Lazygit 設定
-├── wezterm/                # WezTerm 設定 (Linux版 / WSL + WSLg)
+├── wezterm/                # WezTerm 設定 (WSL側 = wezterm-mux-server 用)
 ├── claude/                 # Claude Code 設定
 ├── windows/                # Windows 連携
 │   ├── nvim.bat            #   WSL nvim ラッパー
+│   ├── wezterm.lua         #   Windows版 WezTerm 設定 (GUI側, mux 接続)
 │   └── setup.ps1           #   Windows側セットアップスクリプト
 ├── .zshrc
 ├── .vimrc
@@ -77,7 +78,8 @@ setup.ps1 が行うこと:
 
 1. `%USERPROFILE%\bin` ディレクトリを作成
 2. `nvim.bat` を配置
-3. 環境変数を設定 (`PATH` に `~/bin` を追加、`EDITOR` を設定)
+3. `wezterm.lua` を `%USERPROFILE%\.wezterm.lua` にコピー
+4. 環境変数を設定 (`PATH` に `~/bin` を追加、`EDITOR` を設定)
 
 完了後、ターミナルを再起動すれば以下が可能:
 
@@ -93,58 +95,18 @@ git config --global core.editor "%USERPROFILE%/bin/nvim.bat"
 
 ### WezTerm (ターミナル / Markdown 画像プレビュー)
 
-Markdown の画像プレビュー (md-render.nvim 等, kitty graphics protocol) を使うため、
-**WSL 内で動く Linux 版 WezTerm + WSLg** を利用する。
+**Windows 版 WezTerm (nightly) + WSL 内 wezterm-mux-server への SSH mux 接続**
+を利用する。GPU 描画・Windows IME での日本語入力・md-render.nvim の画像プレビュー
+(kitty graphics protocol) がすべて両立する構成。
 
-- nvim と端末が同じ WSL ファイルシステム上にあるため画像を表示できる
-  (Windows 版 WezTerm では nvim=WSL / 端末=Windows となりファイルパス転送が成立せず不可)
-- tmux 経由では md-render.nvim の画像は表示できない (WezTerm の分割機能で代替)
+- GUI 側設定: `windows/wezterm.lua` (setup.ps1 が `%USERPROFILE%\.wezterm.lua` へコピー)
+- mux server 側設定: `wezterm/wezterm.lua` (install.sh が `~/.config/wezterm` へリンク)
+- WSL 側の sshd (127.0.0.1:2222, 鍵認証のみ) と wezterm パッケージは
+  NixOS の `/etc/nixos/configuration.nix` で構成する
+- Windows 版 wezterm は **nightly が必須** (20240203 安定版は mux プロトコル不整合で接続不可)
+- 画像プレビューは kitty graphics の t=f パス解決が mux server (WSL側) で
+  行われるため動作する。ConPTY (`wsl -d` 直接起動) では APC が握り潰され不可
+- PC 再起動後の WSL 未起動は GUI 側設定が接続前に `wsl.exe` で自動起動して対処
 
-```bash
-# Linux 版 WezTerm (Ubuntu 22.04 向け .deb)
-curl -L -o /tmp/wezterm.deb \
-  "https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb"
-sudo apt install -y /tmp/wezterm.deb
-
-# カーソルテーマ (WSLg でカーソル未検出エラーを防ぐ)
-sudo apt install -y dmz-cursor-theme
-
-# 端末フォント (Windows 側の Moralerspace を WSL にコピー)
-mkdir -p ~/.local/share/fonts
-cp /mnt/c/Users/<user>/AppData/Local/Microsoft/Windows/Fonts/MoralerspaceNeonHW-*.ttf ~/.local/share/fonts/
-fc-cache -f
-
-# 日本語入力 (IME): fcitx5 + Mozc
-sudo apt install -y fcitx5 fcitx5-mozc
-```
-
-設定 `wezterm/wezterm.lua` は install.sh が `~/.config/wezterm` へリンクする。
-起動は WSL 内で `wezterm` (WSLg 経由で Windows デスクトップにウィンドウが開く)。
-
-#### 背景画像 (ローカル設定)
-
-背景画像のパスは個人環境依存のため、git 管理外の `wezterm/local.lua` に書く
-(`.gitignore` 済み)。各マシンで手動作成する:
-
-```lua
--- wezterm/local.lua
-return {
-  background_image = '/mnt/c/Users/<user>/.../wallpaper.jpg',
-  background_brightness = 0.20, -- 0.1=ほぼ黒, 0.3=薄め (省略時 0.20)
-}
-```
-
-#### 日本語入力 (IME)
-
-fcitx5 + Mozc を使用。`fcitx5-configtool` で入力メソッドに Mozc を追加する。
-切替キーは `fcitx5/config` (install.sh が `~/.config/fcitx5/config` へリンク) で
-**右Alt=日本語ON / 左Alt=英語** に設定済み。
-
-起動経路:
-
-- fcitx5 本体は systemd ユーザーサービス `fcitx5.service` が起動 (install.sh が
-  symlink + enable)。WSLg では wayland アドオンが即死するため
-  `--disable=wayland` で X11 (XIM) 経由で動かす。
-- wezterm からの連携は `/usr/local/bin/wezterm` ラッパー
-  (`wezterm/wezterm-launcher.sh`) が担当: IME 環境変数の注入、XIM_SERVERS
-  登録待ち、コールドブート時の fcitx5 再起動対策。詳細はラッパー冒頭コメント。
+旧構成 (Linux 版 WezTerm + WSLg + fcitx5) は WSLg の XWayland に DRI3 が無く
+CPU 描画しかできないため廃止 (git 履歴参照)。

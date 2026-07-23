@@ -14,7 +14,10 @@
       "Bash(awk *.env*)",
       "Bash(vim *.env*)",
       "Bash(nano *.env*)",
-      "Bash(bat *.env*)"
+      "Bash(bat *.env*)",
+      "Bash(rbw get*)",
+      "Bash(rbw code*)",
+      "Read(~/.config/gcloud/**)"
     ],
     "defaultMode": "auto"
   },

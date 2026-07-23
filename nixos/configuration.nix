@@ -96,6 +96,7 @@ in
     mermaid-cli # md-render.nvim の mermaid プレビュー用 (npx 版は NixOS で Chromium が動かない)
     python3
     google-cloud-sdk
+    awscli2
     rustup
     go
     ruby

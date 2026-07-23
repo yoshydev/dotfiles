@@ -14,6 +14,24 @@ let
     inherit (pkgs.stdenv.hostPlatform) system;
     config = config.nixpkgs.config;
   };
+
+  # Bitwarden(rbw) の dotenv 形式エントリ (notes 欄) を、コマンド実行時のみ
+  # 環境変数として注入するラッパー。シェルに常駐させないことで、AIエージェント等の
+  # コンテキストへシークレットが乗る経路を減らす。
+  # 使い方: secrets-run env/myproject -- npm run dev
+  secrets-run = pkgs.writeShellScriptBin "secrets-run" ''
+    set -euo pipefail
+    if [ $# -lt 2 ]; then
+      echo "usage: secrets-run <rbw-entry> [--] <command> [args...]" >&2
+      exit 64
+    fi
+    entry="$1"; shift
+    [ "$1" = "--" ] && shift
+    set -a
+    . <(${pkgs.rbw}/bin/rbw get --raw "$entry" | ${pkgs.jq}/bin/jq -r '.notes // empty')
+    set +a
+    exec "$@"
+  '';
 in
 
 {
@@ -88,6 +106,9 @@ in
     starship
     fd
     jq
+    rbw # Bitwarden CLI (非公式・高速版)。シークレットは secrets-run 経由で注入する
+    pinentry-curses # rbw のマスターパスワード入力用
+    secrets-run
     unzip
     htop
     gcc

@@ -1,0 +1,38 @@
+#!/bin/sh
+# =============================================================================
+# グローバル pre-commit hook
+#
+# .gitconfig の core.hooksPath = ~/dotfiles/git-hooks で全リポジトリに適用される。
+#   1. gitleaks でステージ済み変更の秘密情報スキャン
+#   2. リポジトリ側 .git/hooks/pre-commit があればフォールバック実行
+#      (core.hooksPath 設定時はリポジトリ側 hooks ディレクトリが無視されるため)
+#
+# 注意: husky / lefthook 採用リポジトリはローカル config の core.hooksPath が
+# 優先されるため、この hook は走らない (プロジェクト側の運用が優先される)。
+# =============================================================================
+
+if command -v gitleaks >/dev/null 2>&1; then
+  if ! gitleaks git --pre-commit --staged --redact --verbose; then
+    echo "" >&2
+    echo "pre-commit: gitleaks が秘密情報らしき文字列を検出したためコミットを中止しました。" >&2
+    echo "  誤検出の場合: 該当行末に '# gitleaks:allow' を付けるか、.gitleaks.toml の allowlist に追加" >&2
+    echo "  スキャンを一度だけ飛ばす場合: git commit --no-verify" >&2
+    exit 1
+  fi
+else
+  echo "pre-commit: gitleaks が見つからないためスキャンをスキップしました" >&2
+fi
+
+# リポジトリ側 pre-commit へのフォールバック。
+# 注意: `git rev-parse --git-path hooks/...` は core.hooksPath を尊重して
+# この hook 自身を返す (= 無限再帰する) ため、--git-common-dir から
+# リポジトリ実体の hooks ディレクトリを直接引く。
+repo_hook="$(git rev-parse --git-common-dir)/hooks/pre-commit"
+if [ -x "$repo_hook" ] && [ "$repo_hook" -ef "$0" ]; then
+  repo_hook="" # 万一自分自身を指した場合の再帰ガード
+fi
+if [ -n "$repo_hook" ] && [ -x "$repo_hook" ]; then
+  exec "$repo_hook" "$@"
+fi
+
+exit 0

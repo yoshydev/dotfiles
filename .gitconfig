@@ -6,6 +6,7 @@
 [core]
 	editor = vim
 	autocrlf = false
+	hooksPath = ~/dotfiles/git-hooks
 [pull]
 	ff = only
 [init]

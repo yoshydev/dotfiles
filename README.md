@@ -19,6 +19,8 @@ dotfiles/
 │   ├── history.zsh         #   ヒストリ設定
 │   ├── completion.zsh      #   補完設定
 │   └── plugins.zsh         #   Zinit プラグイン
+├── git-hooks/              # グローバル git hooks (core.hooksPath)
+│   └── pre-commit          #   gitleaks 秘密情報スキャン + リポジトリ側 hook フォールバック
 ├── nvim/                   # Neovim 設定 (lazy.nvim)
 ├── lazygit/                # Lazygit 設定
 ├── wezterm/                # WezTerm 設定 (WSL側 = wezterm-mux-server 用)
@@ -110,3 +112,14 @@ git config --global core.editor "%USERPROFILE%/bin/nvim.bat"
 
 旧構成 (Linux 版 WezTerm + WSLg + fcitx5) は WSLg の XWayland に DRI3 が無く
 CPU 描画しかできないため廃止 (git 履歴参照)。
+
+### グローバル git hooks (gitleaks)
+
+`.gitconfig` の `core.hooksPath = ~/dotfiles/git-hooks` により、全リポジトリの
+コミット時に `git-hooks/pre-commit` が実行され、gitleaks で秘密情報を
+スキャンする (gitleaks 本体は NixOS の systemPackages で導入)。
+
+- リポジトリ側 `.git/hooks/pre-commit` があれば続けて実行する (共存可能)
+- husky / lefthook 採用リポジトリはローカル config の `core.hooksPath` が
+  優先されるため対象外 (プロジェクト側の運用が優先される)
+- 誤検出時は行末に `# gitleaks:allow`、恒久除外はリポジトリの `.gitleaks.toml`

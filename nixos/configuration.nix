@@ -32,6 +32,16 @@ let
     set +a
     exec "$@"
   '';
+
+  # secrets-run の direnv 連携版。プロジェクトの .envrc が export する
+  # SECRETS_ENTRY からエントリ名を取るので、cd 後は `sr <cmd>` だけでよい。
+  sr = pkgs.writeShellScriptBin "sr" ''
+    if [ -z "''${SECRETS_ENTRY:-}" ]; then
+      echo "sr: SECRETS_ENTRY is not set (add 'export SECRETS_ENTRY=env/<project>' to .envrc)" >&2
+      exit 64
+    fi
+    exec secrets-run "$SECRETS_ENTRY" -- "$@"
+  '';
 in
 
 {
@@ -109,6 +119,7 @@ in
     rbw # Bitwarden CLI (非公式・高速版)。シークレットは secrets-run 経由で注入する
     pinentry-curses # rbw のマスターパスワード入力用
     secrets-run
+    sr
     unzip
     htop
     gcc

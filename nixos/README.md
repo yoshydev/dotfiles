@@ -72,7 +72,7 @@ cp -r ~/dotfiles/nix-shells/travelai ~/dotfiles/nix-shells/<project>
 git -C ~/dotfiles add nix-shells/<project>
 # 3. プロジェクト側に .envrc を置いてローカル除外に追加
 echo "use flake /home/yunip/dotfiles/nix-shells/<project>" > <repo>/.envrc
-echo ".envrc" >> <repo>/.git/info/exclude
+printf ".envrc\n.direnv/\n" >> <repo>/.git/info/exclude  # .direnv/ は nix-direnv のキャッシュ
 # 4. 有効化
 direnv allow <repo>
 ```

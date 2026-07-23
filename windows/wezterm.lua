@@ -41,11 +41,23 @@ config.ssh_domains = {
 config.default_gui_startup_args = { 'connect', 'wsl-nixos' }
 
 -- PC再起動直後は WSL VM が停止しており 127.0.0.1:2222 の sshd が存在しないため、
--- 接続前に NixOS ディストリを同期的に起動し sshd の active を待つ (最大10秒)。
--- 接続後は ssh セッションがディストリを keep-alive するので idle terminate しない。
+-- 接続前に NixOS ディストリを起動し sshd の active を待つ (最大10秒)。
+--
+-- 重要: WSL はデーモン (sshd セッション含む) だけではディストリを生存カウント
+-- しないため、wsl.exe 経由の明示的なプロセスが無くなると数十秒で idle 終了し、
+-- mux 接続ごと切断される。そこで常駐の keep-alive プロセス (sleep infinity) を
+-- 先に spawn しておく。このプロセスは wezterm 終了後も残り、NixOS を起動した
+-- ままにする (終了したいときは Windows 側で `wsl --shutdown`)。
 -- 設定リロードのたびに走らないよう GLOBAL でガード (GUIプロセス内で一度だけ)。
 if not wezterm.GLOBAL.wsl_boot_done then
   wezterm.GLOBAL.wsl_boot_done = true
+  -- keep-alive (ディストリの起動も兼ねる)。GUI 再起動のたびにプロセスが累積
+  -- しないよう、WSL 側の flock で単一インスタンス化する (獲得済みなら即終了)。
+  wezterm.background_child_process {
+    'wsl.exe', '-d', 'NixOS', '--exec', '/bin/sh', '-c',
+    'exec /run/current-system/sw/bin/flock -n /tmp/wezterm-wsl-keepalive.lock /run/current-system/sw/bin/sleep infinity',
+  }
+  -- sshd が listen するまで同期的に待ってから mux 接続へ進む
   wezterm.run_child_process {
     'wsl.exe', '-d', 'NixOS', '--exec', '/bin/sh', '-c',
     'for i in $(seq 1 50); do /run/current-system/sw/bin/systemctl is-active -q sshd.service && exit 0; /run/current-system/sw/bin/sleep 0.2; done; exit 1',

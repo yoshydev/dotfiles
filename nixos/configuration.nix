@@ -117,6 +117,7 @@ in
     direnv
     starship
     fd
+    ripgrep
     jq
     rbw # Bitwarden CLI (非公式・高速版)。シークレットは secrets-run 経由で注入する
     pinentry-curses # rbw のマスターパスワード入力用

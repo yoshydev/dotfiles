@@ -51,7 +51,7 @@ in
 
   wsl.enable = true;
   wsl.defaultUser = "yunip";
-  wsl.interop.register = false;
+  wsl.interop.register = true;
   # WSL の GPU パススルー (/usr/lib/wsl/lib の libdxcore) を mesa d3d12
   # ドライバから使えるようにする。Linux GUI アプリで Vulkan/OpenGL を
   # 使う場合に必要なため残置 (wezterm は Windows 版 + mux 接続に移行済み)。
@@ -94,6 +94,15 @@ in
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+  };
+  
+  # 汎用Linux向けELF (ticktime の @yao-pkg/pkg プリビルトNode・生成サイドカー等) を
+  # 実行可能にする。pkg は最小 env で子プロセスを spawn するため NIX_LD 環境変数が
+  # 伝わらないケースがあり、/run/current-system/sw/share/nix-ld/lib への
+  # フォールバック (nix-ld 既定機構) に依存する。stdenv.cc.cc.lib は libstdc++ 用。
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [ stdenv.cc.cc.lib ];
   };
 
   environment.systemPackages = with pkgs; [

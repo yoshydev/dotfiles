@@ -61,7 +61,7 @@ if [ -n "$cc_version" ] && [ -f "$update_cache" ]; then
 fi
 
 # Date
-date_str=$(date '+%y-%m-%d %H:%M')
+date_str=$(TZ='Asia/Tokyo' date '+%y-%m-%d %H:%M')
 
 # Keybinding hints
 hints="Shift+Tab: plan mode | Esc: interrupt"

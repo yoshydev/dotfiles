@@ -84,6 +84,8 @@ in
   # travel.ai 等の開発環境用 (Ubuntu から移行)
   virtualisation.docker.enable = true;
 
+  time.timeZone = "Asia/Tokyo";
+
   nixpkgs.config.allowUnfree = true;
 
   programs.zsh.enable = true;

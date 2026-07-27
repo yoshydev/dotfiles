@@ -21,6 +21,8 @@ return {
         char = "│",
         scope = { enabled = true },
       },
+      -- 画像プレビュー (kitty graphics protocol)
+      image = { enabled = true },
       -- 入力UI
       input = { enabled = true },
       -- LazyGit (lazygit.nvim の代替)

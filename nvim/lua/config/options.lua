@@ -16,6 +16,37 @@ vim.g.clipboard = {
   paste = { ["+"] = paste_fallback, ["*"] = paste_fallback },
 }
 
+-- vim.ui.open (gx, Snacks explorer の O 等) を Windows 側アプリで開く。
+-- wslview 未導入のため explorer.exe + wslpath でパス変換して起動する。
+-- 画像は JPEGView で開く (フォトはコマンドライン起動だとフォルダ内の
+-- 矢印キー移動ができないため)。explorer.exe は成功時も終了コード 1 を
+-- 返すため結果は検査しない。
+if vim.fn.has("wsl") == 1 then
+  local jpegview = "/mnt/c/Program Files/JPEGView/JPEGView.exe"
+  local image_ext = {
+    png = true, jpg = true, jpeg = true, gif = true, webp = true,
+    bmp = true, tif = true, tiff = true, ico = true, avif = true,
+  }
+  vim.ui.open = function(path)
+    if not path:match("^%a+://") then
+      local ext = (path:match("%.(%w+)$") or ""):lower()
+      path = vim.trim(vim.fn.system({ "/bin/wslpath", "-w", vim.fn.fnamemodify(path, ":p") }))
+      if image_ext[ext] and vim.uv.fs_stat(jpegview) then
+        -- WSL interop で直接起動するとキーマップが読み込まれず
+        -- キーボード操作が全滅するため ShellExecute (Start-Process) 経由で起動する
+        vim.system({
+          "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+          "-NoProfile",
+          "-Command",
+          ("Start-Process -FilePath 'C:\\Program Files\\JPEGView\\JPEGView.exe' -ArgumentList '\"%s\"' -WorkingDirectory 'C:\\'"):format(path),
+        }, { detach = true })
+        return
+      end
+    end
+    vim.system({ "/mnt/c/Windows/explorer.exe", path }, { detach = true })
+  end
+end
+
 opt.number = true
 
 opt.tabstop = 2

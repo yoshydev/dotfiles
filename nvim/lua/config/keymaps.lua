@@ -28,6 +28,7 @@ wk.add({
   },
   {
     mode = { "n", "v" },
+    { "<leader>o", function() vim.ui.open(vim.api.nvim_buf_get_name(0)) end, desc = "Open in Windows app" },
     { "<leader>q", "<cmd>q<cr>", desc = "Quit" },
     { "<leader>w", "<cmd>w<cr>", desc = "Write" },
     -- Copilot Chat

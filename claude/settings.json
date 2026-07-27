@@ -1,4 +1,8 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "deny": [
       "Read(.env)",
@@ -49,5 +53,6 @@
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "skipAutoPermissionPrompt": true,
-  "useAutoModeDuringPlan": true
+  "useAutoModeDuringPlan": true,
+  "switchModelsOnFlag": false
 }
